@@ -5,10 +5,10 @@ class Portfolio:
         # initialize with starting capital and no positions
         self.initial_capital = initial_capital
         self.current_cash = initial_capital
-        self.positions = 0
+        self.positions = 0.0
         self.equity_curve = []
 
-    def update(self, price: float, action: str, quantity: int, commission_rate: float = 0.0, slippage_rate: float = 0.0):
+    def update(self, price: float, action: str, quantity: float, commission_rate: float = 0.0, slippage_rate: float = 0.0):
         # process buying and selling with realistic market friction
         if action == 'buy':
             # slippage increases the price you pay

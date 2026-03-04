@@ -18,27 +18,34 @@ class ExecutionEngine:
             
             # execute trades based on signals while applying friction
             if current_signal == 1:
+                # calculate fractional quantity using 95 percent of available cash
+                investable_cash = self.portfolio.current_cash * 0.95
+                target_quantity = investable_cash / current_price
+                
                 self.portfolio.update(
                     price=current_price, 
                     action='buy', 
-                    quantity=1, 
+                    quantity=target_quantity, 
                     commission_rate=self.commission_rate, 
                     slippage_rate=self.slippage_rate
                 )
             elif current_signal == -1:
-                self.portfolio.update(
-                    price=current_price, 
-                    action='sell', 
-                    quantity=1, 
-                    commission_rate=self.commission_rate, 
-                    slippage_rate=self.slippage_rate
-                )
+                # sell all currently held fractional positions
+                current_positions = self.portfolio.positions
+                if current_positions > 0:
+                    self.portfolio.update(
+                        price=current_price, 
+                        action='sell', 
+                        quantity=current_positions, 
+                        commission_rate=self.commission_rate, 
+                        slippage_rate=self.slippage_rate
+                    )
             else:
                 # hold position but update the equity curve to reflect mark-to-market value
                 self.portfolio.update(
                     price=current_price, 
                     action='hold', 
-                    quantity=0, 
+                    quantity=0.0, 
                     commission_rate=0.0, 
                     slippage_rate=0.0
                 )
